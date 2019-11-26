@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html data-html-server-rendered="true" lang="en" data-vue-tag="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D%7D">
+  <head>
+    <title>Anatomy of an XNA Application by Kevin Griffin</title><meta name="gridsome:hash" content="782414107f461c86c0093807ec9a7009f522142f"><meta data-vue-tag="ssr" charset="utf-8"><meta data-vue-tag="ssr" name="generator" content="Gridsome v0.7.11"><meta data-vue-tag="ssr" data-key="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta data-vue-tag="ssr" data-key="format-detection" name="format-detection" content="telephone=no"><link data-vue-tag="ssr" rel="icon" href="data:,"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="16x16" href="/assets/static/favicon.ce0531f.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="32x32" href="/assets/static/favicon.ac8d93a.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="/assets/static/favicon.b9532cc.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="76x76" href="/assets/static/favicon.f22e9f3.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="152x152" href="/assets/static/favicon.62d22cb.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="120x120" href="/assets/static/favicon.1539b60.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="167x167" href="/assets/static/favicon.dc0cdc5.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="180x180" href="/assets/static/favicon.7b22250.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mali:700|Nunito"><link rel="preload" href="/assets/css/0.styles.dc844d61.css" as="style"><link rel="preload" href="/assets/js/app.a597a7b1.js" as="script"><link rel="preload" href="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" as="script"><link rel="prefetch" href="/assets/js/page--node-modules-gridsome-app-pages-404-vue.e4711ebb.js"><link rel="prefetch" href="/assets/js/page--src-pages-index-vue.e8d64122.js"><link rel="stylesheet" href="/assets/css/0.styles.dc844d61.css"><noscript data-vue-tag="ssr"><style>.g-image--loading{display:none;}</style></noscript>
+  </head>
+  <body >
+    <div data-server-rendered="true" id="app" class="layout"><header class="header"><a href="/" class="heading-link active"><h6 class="heading"></h6></a></header><div class="article"><h1>Anatomy of an XNA Application</h1><span>January 04, 2009</span><div class="content"><p>So you have your environment set up, and you create your first XNA project.  XNA Game Studio sets up your project, and gives you a great skeleton for developing your game.  Below is the complete "Game1.cs" file you're given.  I recommend renaming this file and class to something a bit more meaningful.</p>
+<pre lang="csharp">using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Net;
+using Microsoft.Xna.Framework.Storage;
+
+namespace LastAgent
+{
+    ///
+    /// This is the main type for your game
+    ///
+    public class Game1 : Microsoft.Xna.Framework.Game
+    {
+        GraphicsDeviceManager graphics;
+        SpriteBatch spriteBatch;
+
+        public Game1()
+        {
+            graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+        }
+
+        ///
+        /// Allows the game to perform any initialization it needs to before starting to run.
+        /// This is where it can query for any required services and load any non-graphic
+        /// related content.  Calling base.Initialize will enumerate through any components
+        /// and initialize them as well.
+        ///
+        protected override void Initialize()
+        {
+            // TODO: Add your initialization logic here
+
+            base.Initialize();
+        }
+
+        ///
+        /// LoadContent will be called once per game and is the place to load
+        /// all of your content.
+        ///
+        protected override void LoadContent()
+        {
+            // Create a new SpriteBatch, which can be used to draw textures.
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            // TODO: use this.Content to load your game content here
+        }
+
+        ///
+        /// UnloadContent will be called once per game and is the place to unload
+        /// all content.
+        ///
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+        }
+
+        ///
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        ///
+        /// Provides a snapshot of timing values.
+        protected override void Update(GameTime gameTime)
+        {
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                this.Exit();
+
+            // TODO: Add your update logic here
+
+            base.Update(gameTime);
+        }
+
+        ///
+        /// This is called when the game should draw itself.
+        ///
+        /// Provides a snapshot of timing values.
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            // TODO: Add your drawing code here
+
+            base.Draw(gameTime);
+        }
+    }
+}</pre>
+<p>Let's evaluate the various parts of this code.  We'll ignore the using statements, and get right into the meat of the class.  Below is a snippet of the code.  We're given two objects, GraphicsDeviceManager and SpriteBatch.  The GraphicsDeviceManager helps us determine the type of device we're going to be outputting to.  This can range from various PC graphics cards to the Zune or Xbox 360.  We'll use this class later to alter our output based on users environment.  Next is the SpriteBatch.  Think of this as a List&#x3C;> of images you want to draw to the screen.  This will be covered a little bit later in the Draw() method.</p>
+<p>Next is the game class constructor, which sets up the GraphicsDeviceManager and sets our Content pipeline.  The content pipeline is a post all in itself, so don't worry too much about it now.  The Initialize() method provides you a place to do anything you need to do before the game runs.  I'm at a loss for a good example of what you would put here, but if I ever think of one, I'll be sure to let you know.</p>
+<pre lang="csharp">
+GraphicsDeviceManager graphics;
+        SpriteBatch spriteBatch;
+
+        public Game1()
+        {
+            graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+        }
+
+        ///
+        /// Allows the game to perform any initialization it needs to before starting to run.
+        /// This is where it can query for any required services and load any non-graphic
+        /// related content.  Calling base.Initialize will enumerate through any components
+        /// and initialize them as well.
+        ///
+        protected override void Initialize()
+        {
+            // TODO: Add your initialization logic here
+
+            base.Initialize();
+        }
+</pre>
+<p>Next are our Load and Unload content methods.  The purpose of these methods are to load all the content you need to start the game.  The comment says "load all your content", but realistically you don't want to do that.  For demos, this is ok.  For commercial games, you want to load as little as possible to get the user going and load as necessary.  That's what loading screens are for!</p>
+<pre lang="csharp">
+        ///
+        /// LoadContent will be called once per game and is the place to load
+        /// all of your content.
+        ///
+        protected override void LoadContent()
+        {
+            // Create a new SpriteBatch, which can be used to draw textures.
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            // TODO: use this.Content to load your game content here
+        }
+
+        ///
+        /// UnloadContent will be called once per game and is the place to unload
+        /// all content.
+        ///
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+        }
+</pre>
+<p>The last two methods are the meat of your XNA application.  The Update() method is provided to you as a way to update the state of your game.  As the comment says, you use this method to update your world, check for collisions, gather input, play audio, etc.  By default, you're given code that will detect a button press from an Xbox 360 controller.  Keep in mind when designing your games if you are going to accept input from just a 360 controller, keyboard, mouse, or all of the above.</p>
+<p>Finally, there is the Draw method, and this is where all your content makes it onto the screen.  The first line clears the screen.  This is a very necessary step.  Failing to clear the screen would lead to some wacky results.  Think of the screen as a canvas.  You can't simply redraw on top of what you've already drawn.  Calling the clear method results in a new canvas.  This screen is where our friend SpriteBatch will come in handy.</p>
+<pre lang="csharp">
+        ///
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        ///
+        /// Provides a snapshot of timing values.
+        protected override void Update(GameTime gameTime)
+        {
+            // Allows the game to exit
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                this.Exit();
+
+            // TODO: Add your update logic here
+
+            base.Update(gameTime);
+        }
+
+        ///
+        /// This is called when the game should draw itself.
+        ///
+        /// Provides a snapshot of timing values.
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            // TODO: Add your drawing code here
+
+            base.Draw(gameTime);
+        }
+</pre>
+<p>And that's about it!  Press Ctrl-F5 to build and run your first XNA application.  You should be greeted with a pretty, Cornflower Blue screen.  What you're not seeing is your Update and Draw methods being called continuously.</p>
+<p>What's next for our little application?  For starters, we need to get some stuff on the screen.  For my game, I'm going to be using a tile based game, so my next entry will revolve around loading tile sets and drawing them to the screen.</p>
+<p>Happy developing!</p>
+</div></div></div>
+    <script>window.__INITIAL_STATE__={"data":{"article":{"id":"fb0d27c57aa9b6dc97d78c533f1fee75","title":"Anatomy of an XNA Application","date":"January 04, 2009","categories":["Development - Game Development"],"permalink":"anatomy-of-an-xna-application","content":"\u003Cp\u003ESo you have your environment set up, and you create your first XNA project.  XNA Game Studio sets up your project, and gives you a great skeleton for developing your game.  Below is the complete \"Game1.cs\" file you're given.  I recommend renaming this file and class to something a bit more meaningful.\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003Eusing System;\nusing System.Collections.Generic;\nusing System.Linq;\nusing Microsoft.Xna.Framework;\nusing Microsoft.Xna.Framework.Audio;\nusing Microsoft.Xna.Framework.Content;\nusing Microsoft.Xna.Framework.GamerServices;\nusing Microsoft.Xna.Framework.Graphics;\nusing Microsoft.Xna.Framework.Input;\nusing Microsoft.Xna.Framework.Media;\nusing Microsoft.Xna.Framework.Net;\nusing Microsoft.Xna.Framework.Storage;\n\nnamespace LastAgent\n{\n    \u002F\u002F\u002F\n    \u002F\u002F\u002F This is the main type for your game\n    \u002F\u002F\u002F\n    public class Game1 : Microsoft.Xna.Framework.Game\n    {\n        GraphicsDeviceManager graphics;\n        SpriteBatch spriteBatch;\n\n        public Game1()\n        {\n            graphics = new GraphicsDeviceManager(this);\n            Content.RootDirectory = \"Content\";\n        }\n\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F Allows the game to perform any initialization it needs to before starting to run.\n        \u002F\u002F\u002F This is where it can query for any required services and load any non-graphic\n        \u002F\u002F\u002F related content.  Calling base.Initialize will enumerate through any components\n        \u002F\u002F\u002F and initialize them as well.\n        \u002F\u002F\u002F\n        protected override void Initialize()\n        {\n            \u002F\u002F TODO: Add your initialization logic here\n\n            base.Initialize();\n        }\n\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F LoadContent will be called once per game and is the place to load\n        \u002F\u002F\u002F all of your content.\n        \u002F\u002F\u002F\n        protected override void LoadContent()\n        {\n            \u002F\u002F Create a new SpriteBatch, which can be used to draw textures.\n            spriteBatch = new SpriteBatch(GraphicsDevice);\n\n            \u002F\u002F TODO: use this.Content to load your game content here\n        }\n\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F UnloadContent will be called once per game and is the place to unload\n        \u002F\u002F\u002F all content.\n        \u002F\u002F\u002F\n        protected override void UnloadContent()\n        {\n            \u002F\u002F TODO: Unload any non ContentManager content here\n        }\n\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F Allows the game to run logic such as updating the world,\n        \u002F\u002F\u002F checking for collisions, gathering input, and playing audio.\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F Provides a snapshot of timing values.\n        protected override void Update(GameTime gameTime)\n        {\n            \u002F\u002F Allows the game to exit\n            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)\n                this.Exit();\n\n            \u002F\u002F TODO: Add your update logic here\n\n            base.Update(gameTime);\n        }\n\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F This is called when the game should draw itself.\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F Provides a snapshot of timing values.\n        protected override void Draw(GameTime gameTime)\n        {\n            GraphicsDevice.Clear(Color.CornflowerBlue);\n\n            \u002F\u002F TODO: Add your drawing code here\n\n            base.Draw(gameTime);\n        }\n    }\n}\u003C\u002Fpre\u003E\n\u003Cp\u003ELet's evaluate the various parts of this code.  We'll ignore the using statements, and get right into the meat of the class.  Below is a snippet of the code.  We're given two objects, GraphicsDeviceManager and SpriteBatch.  The GraphicsDeviceManager helps us determine the type of device we're going to be outputting to.  This can range from various PC graphics cards to the Zune or Xbox 360.  We'll use this class later to alter our output based on users environment.  Next is the SpriteBatch.  Think of this as a List&#x3C;\u003E of images you want to draw to the screen.  This will be covered a little bit later in the Draw() method.\u003C\u002Fp\u003E\n\u003Cp\u003ENext is the game class constructor, which sets up the GraphicsDeviceManager and sets our Content pipeline.  The content pipeline is a post all in itself, so don't worry too much about it now.  The Initialize() method provides you a place to do anything you need to do before the game runs.  I'm at a loss for a good example of what you would put here, but if I ever think of one, I'll be sure to let you know.\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003E\nGraphicsDeviceManager graphics;\n        SpriteBatch spriteBatch;\n\n        public Game1()\n        {\n            graphics = new GraphicsDeviceManager(this);\n            Content.RootDirectory = \"Content\";\n        }\n\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F Allows the game to perform any initialization it needs to before starting to run.\n        \u002F\u002F\u002F This is where it can query for any required services and load any non-graphic\n        \u002F\u002F\u002F related content.  Calling base.Initialize will enumerate through any components\n        \u002F\u002F\u002F and initialize them as well.\n        \u002F\u002F\u002F\n        protected override void Initialize()\n        {\n            \u002F\u002F TODO: Add your initialization logic here\n\n            base.Initialize();\n        }\n\u003C\u002Fpre\u003E\n\u003Cp\u003ENext are our Load and Unload content methods.  The purpose of these methods are to load all the content you need to start the game.  The comment says \"load all your content\", but realistically you don't want to do that.  For demos, this is ok.  For commercial games, you want to load as little as possible to get the user going and load as necessary.  That's what loading screens are for!\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003E\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F LoadContent will be called once per game and is the place to load\n        \u002F\u002F\u002F all of your content.\n        \u002F\u002F\u002F\n        protected override void LoadContent()\n        {\n            \u002F\u002F Create a new SpriteBatch, which can be used to draw textures.\n            spriteBatch = new SpriteBatch(GraphicsDevice);\n\n            \u002F\u002F TODO: use this.Content to load your game content here\n        }\n\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F UnloadContent will be called once per game and is the place to unload\n        \u002F\u002F\u002F all content.\n        \u002F\u002F\u002F\n        protected override void UnloadContent()\n        {\n            \u002F\u002F TODO: Unload any non ContentManager content here\n        }\n\u003C\u002Fpre\u003E\n\u003Cp\u003EThe last two methods are the meat of your XNA application.  The Update() method is provided to you as a way to update the state of your game.  As the comment says, you use this method to update your world, check for collisions, gather input, play audio, etc.  By default, you're given code that will detect a button press from an Xbox 360 controller.  Keep in mind when designing your games if you are going to accept input from just a 360 controller, keyboard, mouse, or all of the above.\u003C\u002Fp\u003E\n\u003Cp\u003EFinally, there is the Draw method, and this is where all your content makes it onto the screen.  The first line clears the screen.  This is a very necessary step.  Failing to clear the screen would lead to some wacky results.  Think of the screen as a canvas.  You can't simply redraw on top of what you've already drawn.  Calling the clear method results in a new canvas.  This screen is where our friend SpriteBatch will come in handy.\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003E\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F Allows the game to run logic such as updating the world,\n        \u002F\u002F\u002F checking for collisions, gathering input, and playing audio.\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F Provides a snapshot of timing values.\n        protected override void Update(GameTime gameTime)\n        {\n            \u002F\u002F Allows the game to exit\n            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)\n                this.Exit();\n\n            \u002F\u002F TODO: Add your update logic here\n\n            base.Update(gameTime);\n        }\n\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F This is called when the game should draw itself.\n        \u002F\u002F\u002F\n        \u002F\u002F\u002F Provides a snapshot of timing values.\n        protected override void Draw(GameTime gameTime)\n        {\n            GraphicsDevice.Clear(Color.CornflowerBlue);\n\n            \u002F\u002F TODO: Add your drawing code here\n\n            base.Draw(gameTime);\n        }\n\u003C\u002Fpre\u003E\n\u003Cp\u003EAnd that's about it!  Press Ctrl-F5 to build and run your first XNA application.  You should be greeted with a pretty, Cornflower Blue screen.  What you're not seeing is your Update and Draw methods being called continuously.\u003C\u002Fp\u003E\n\u003Cp\u003EWhat's next for our little application?  For starters, we need to get some stuff on the screen.  For my game, I'm going to be using a tile based game, so my next entry will revolve around loading tile sets and drawing them to the screen.\u003C\u002Fp\u003E\n\u003Cp\u003EHappy developing!\u003C\u002Fp\u003E\n"}},"context":{}};(function(){var s;(s=document.currentScript||document.scripts[document.scripts.length-1]).parentNode.removeChild(s);}());</script><script src="/assets/js/app.a597a7b1.js" defer></script><script src="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" defer></script>
+  </body>
+</html>

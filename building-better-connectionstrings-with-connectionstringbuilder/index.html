@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html data-html-server-rendered="true" lang="en" data-vue-tag="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D%7D">
+  <head>
+    <title>Building better ConnectionStrings with ConnectionStringBuilder by Kevin Griffin</title><meta name="gridsome:hash" content="782414107f461c86c0093807ec9a7009f522142f"><meta data-vue-tag="ssr" charset="utf-8"><meta data-vue-tag="ssr" name="generator" content="Gridsome v0.7.11"><meta data-vue-tag="ssr" data-key="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta data-vue-tag="ssr" data-key="format-detection" name="format-detection" content="telephone=no"><link data-vue-tag="ssr" rel="icon" href="data:,"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="16x16" href="/assets/static/favicon.ce0531f.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="32x32" href="/assets/static/favicon.ac8d93a.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="/assets/static/favicon.b9532cc.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="76x76" href="/assets/static/favicon.f22e9f3.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="152x152" href="/assets/static/favicon.62d22cb.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="120x120" href="/assets/static/favicon.1539b60.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="167x167" href="/assets/static/favicon.dc0cdc5.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="180x180" href="/assets/static/favicon.7b22250.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mali:700|Nunito"><link rel="preload" href="/assets/css/0.styles.dc844d61.css" as="style"><link rel="preload" href="/assets/js/app.a597a7b1.js" as="script"><link rel="preload" href="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" as="script"><link rel="prefetch" href="/assets/js/page--node-modules-gridsome-app-pages-404-vue.e4711ebb.js"><link rel="prefetch" href="/assets/js/page--src-pages-index-vue.e8d64122.js"><link rel="stylesheet" href="/assets/css/0.styles.dc844d61.css"><noscript data-vue-tag="ssr"><style>.g-image--loading{display:none;}</style></noscript>
+  </head>
+  <body >
+    <div data-server-rendered="true" id="app" class="layout"><header class="header"><a href="/" class="heading-link active"><h6 class="heading"></h6></a></header><div class="article"><h1>Building better ConnectionStrings with ConnectionStringBuilder</h1><span>February 14, 2011</span><div class="content"><p>Okay, I never admitted to being a .NET guru or anything, and that’s why I get so excited whenever I run across a gem in the framework that allows me to do something easier and with fewer issues.</p>
+<p>ConnectionStrings has always been one of those things I did the hard way.  For example, I would have a line of code that was like so:</p>
+<pre lang="csharp">
+string connectionString =  "Data Source={0};Initial Catalog={1};User Id={2};Password={3};";
+string.Format(connectionString, serverName, databaseName, userName, password);
+</pre>
+<p>This seemed like a logical way to build my connection strings.  However, it wasn’t very flexible.  That was until I discovered the suite of ConnectionStringBuilder classes.</p>
+<p>Let’s take the above OleDb connection string and use the OleDbConnectionStringBuilder to build it.</p>
+<pre lang="csharp">
+System.Data.OleDb.OleDbConnectionStringBuilder oleDbConnectionStringBuilder  =
+            new OleDbConnectionStringBuilder();
+oleDbConnectionStringBuilder.DataSource = "myServer";
+oleDbConnectionStringBuilder.FileName = "myAccessFile.mdb";
+oleDbConnectionStringBuilder.ToString();
+</pre>
+<p>Look at how much cleaner that is!  Maybe you’re working with a SQL Server database:</p>
+<pre lang="csharp">
+System.Data.SqlClient.SqlConnectionStringBuilder connectionStringBuilder =
+                new SqlConnectionStringBuilder();
+connectionStringBuilder.DataSource = "myServer";
+connectionStringBuilder.InitialCatalog = "databaseName";
+connectionStringBuilder.UserID = "userName";
+connectionStringBuilder.Password = "password";
+connectionStringBuilder.ToString();
+</pre>
+<p>Isn’t that awesome?!  Now, finally, let’s imagine you’re doing all this with Entity Framework:</p>
+<pre lang="csharp">
+System.Data.EntityClient.EntityConnectionStringBuilder entityConnectionStringBuilder =
+                new EntityConnectionStringBuilder();
+entityConnectionStringBuilder.ProviderConnectionString = connectionStringBuilder.ToString();
+entityConnectionStringBuilder.Metadata = "(entity framework metadata here)";
+entityConnectionStringBuilder.ToString();
+</pre>
+<p>There you go!  Instead of hand writing your connection strings, take a look to see if there is a StringBuilder class that’ll do the work for you.</p>
+</div></div></div>
+    <script>window.__INITIAL_STATE__={"data":{"article":{"id":"f2d0856a29b1c4bf2be098251fdd08a8","title":"Building better ConnectionStrings with ConnectionStringBuilder","date":"February 14, 2011","categories":["Development - C#"],"permalink":"building-better-connectionstrings-with-connectionstringbuilder","content":"\u003Cp\u003EOkay, I never admitted to being a .NET guru or anything, and that’s why I get so excited whenever I run across a gem in the framework that allows me to do something easier and with fewer issues.\u003C\u002Fp\u003E\n\u003Cp\u003EConnectionStrings has always been one of those things I did the hard way.  For example, I would have a line of code that was like so:\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003E\nstring connectionString =  \"Data Source={0};Initial Catalog={1};User Id={2};Password={3};\";\nstring.Format(connectionString, serverName, databaseName, userName, password);\n\u003C\u002Fpre\u003E\n\u003Cp\u003EThis seemed like a logical way to build my connection strings.  However, it wasn’t very flexible.  That was until I discovered the suite of ConnectionStringBuilder classes.\u003C\u002Fp\u003E\n\u003Cp\u003ELet’s take the above OleDb connection string and use the OleDbConnectionStringBuilder to build it.\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003E\nSystem.Data.OleDb.OleDbConnectionStringBuilder oleDbConnectionStringBuilder  =\n            new OleDbConnectionStringBuilder();\noleDbConnectionStringBuilder.DataSource = \"myServer\";\noleDbConnectionStringBuilder.FileName = \"myAccessFile.mdb\";\noleDbConnectionStringBuilder.ToString();\n\u003C\u002Fpre\u003E\n\u003Cp\u003ELook at how much cleaner that is!  Maybe you’re working with a SQL Server database:\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003E\nSystem.Data.SqlClient.SqlConnectionStringBuilder connectionStringBuilder =\n                new SqlConnectionStringBuilder();\nconnectionStringBuilder.DataSource = \"myServer\";\nconnectionStringBuilder.InitialCatalog = \"databaseName\";\nconnectionStringBuilder.UserID = \"userName\";\nconnectionStringBuilder.Password = \"password\";\nconnectionStringBuilder.ToString();\n\u003C\u002Fpre\u003E\n\u003Cp\u003EIsn’t that awesome?!  Now, finally, let’s imagine you’re doing all this with Entity Framework:\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003E\nSystem.Data.EntityClient.EntityConnectionStringBuilder entityConnectionStringBuilder =\n                new EntityConnectionStringBuilder();\nentityConnectionStringBuilder.ProviderConnectionString = connectionStringBuilder.ToString();\nentityConnectionStringBuilder.Metadata = \"(entity framework metadata here)\";\nentityConnectionStringBuilder.ToString();\n\u003C\u002Fpre\u003E\n\u003Cp\u003EThere you go!  Instead of hand writing your connection strings, take a look to see if there is a StringBuilder class that’ll do the work for you.\u003C\u002Fp\u003E\n"}},"context":{}};(function(){var s;(s=document.currentScript||document.scripts[document.scripts.length-1]).parentNode.removeChild(s);}());</script><script src="/assets/js/app.a597a7b1.js" defer></script><script src="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" defer></script>
+  </body>
+</html>

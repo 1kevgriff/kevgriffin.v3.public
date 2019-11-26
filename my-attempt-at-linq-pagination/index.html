@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html data-html-server-rendered="true" lang="en" data-vue-tag="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D%7D">
+  <head>
+    <title>My Attempt at LINQ Pagination by Kevin Griffin</title><meta name="gridsome:hash" content="782414107f461c86c0093807ec9a7009f522142f"><meta data-vue-tag="ssr" charset="utf-8"><meta data-vue-tag="ssr" name="generator" content="Gridsome v0.7.11"><meta data-vue-tag="ssr" data-key="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta data-vue-tag="ssr" data-key="format-detection" name="format-detection" content="telephone=no"><link data-vue-tag="ssr" rel="icon" href="data:,"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="16x16" href="/assets/static/favicon.ce0531f.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="32x32" href="/assets/static/favicon.ac8d93a.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="/assets/static/favicon.b9532cc.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="76x76" href="/assets/static/favicon.f22e9f3.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="152x152" href="/assets/static/favicon.62d22cb.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="120x120" href="/assets/static/favicon.1539b60.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="167x167" href="/assets/static/favicon.dc0cdc5.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="180x180" href="/assets/static/favicon.7b22250.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mali:700|Nunito"><link rel="preload" href="/assets/css/0.styles.dc844d61.css" as="style"><link rel="preload" href="/assets/js/app.a597a7b1.js" as="script"><link rel="preload" href="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" as="script"><link rel="prefetch" href="/assets/js/page--node-modules-gridsome-app-pages-404-vue.e4711ebb.js"><link rel="prefetch" href="/assets/js/page--src-pages-index-vue.e8d64122.js"><link rel="stylesheet" href="/assets/css/0.styles.dc844d61.css"><noscript data-vue-tag="ssr"><style>.g-image--loading{display:none;}</style></noscript>
+  </head>
+  <body >
+    <div data-server-rendered="true" id="app" class="layout"><header class="header"><a href="/" class="heading-link active"><h6 class="heading"></h6></a></header><div class="article"><h1>My Attempt at LINQ Pagination</h1><span>October 16, 2009</span><div class="content"><p>Today I’ve been diving into an easy way to paginate record sets in my applications.&#160; Searching around the internet yielded several good walkthroughs on how to do this.&#160; My favorite way came from my friend, <a href="http://www.gotnet.biz/Blog/post/Efficient-Paging-in-SQL-Server-via-LINQ.aspx">Kevin Hazzard</a>, He discussed using the Skip() and Take() extension methods to form fit LINQ into building a SQL statement that’ll do all the heavy lifting for you.</p>  <p>Copying from Kevin’s example, I built the following code snippet:</p>  <pre lang="csharp">int pageNumber = 1;
+int pageSize = 20;
+<p>using (var entity = new Entities())
+{
+var recordSet = (from r in entity.SomeTable
+orderby r.SomeID
+select r);
+recordSet = recordSet.Skip((pageNumber - 1) * pageSize).Take(pageSize);</p>
+<pre><code>return recordSet;
+</code></pre>
+<p>}</pre></p>
+<p>What’s nice about the following code is that since LINQ is lazy loading, the SQL built doesn’t actually execute until we need it too.&#160; The days of returning full datasets are done (yes, we’re still doing that on some projects).&#160; </p>
+<p>I went the next step to see if I could build an extension method of my own that did all of the above for me automatically.&#160; Here was the result I came up with:</p>
+<pre lang="csharp">public static class ExtensionMethods
+{
+	public static IQueryable<t> Paginate<t>(this IQueryable<t> content, int pageNumber, int pageSize)
+        {
+            return content.Skip((pageNumber - 1)*pageSize).Take(pageSize);
+        }
+}</pre>
+<p>This extension method takes the query returned from LINQ (an IQueryable), and applies the additional constraints to it.&#160; Here is the first example using my new extension method:</p>
+<pre lang="csharp">int pageNumber = 1;
+int pageSize = 20;
+
+using (var entity = new Entities())
+{
+	var recordSet = (from r in entity.SomeTable
+			orderby r.SomeID
+			select r);
+	recordSet = recordSet.Paginate(pageNumber, pageSize);
+
+	return recordSet;
+}</pre>
+<p>&#160;</p>
+<p>Ta da!&#160; Hopefully that makes sense.&#160; I’m open to other suggestions and comments.&#160; I’m learning that if I take about my thought processes on certain problems, that I receive a ton of great feedback from those who listen.</p>
+</div></div></div>
+    <script>window.__INITIAL_STATE__={"data":{"article":{"id":"17f878097de702c90684b3768bab95bb","title":"My Attempt at LINQ Pagination","date":"October 16, 2009","categories":["Development - C#"],"permalink":"my-attempt-at-linq-pagination","content":"\u003Cp\u003EToday I’ve been diving into an easy way to paginate record sets in my applications.&#160; Searching around the internet yielded several good walkthroughs on how to do this.&#160; My favorite way came from my friend, \u003Ca href=\"http:\u002F\u002Fwww.gotnet.biz\u002FBlog\u002Fpost\u002FEfficient-Paging-in-SQL-Server-via-LINQ.aspx\"\u003EKevin Hazzard\u003C\u002Fa\u003E, He discussed using the Skip() and Take() extension methods to form fit LINQ into building a SQL statement that’ll do all the heavy lifting for you.\u003C\u002Fp\u003E  \u003Cp\u003ECopying from Kevin’s example, I built the following code snippet:\u003C\u002Fp\u003E  \u003Cpre lang=\"csharp\"\u003Eint pageNumber = 1;\nint pageSize = 20;\n\u003Cp\u003Eusing (var entity = new Entities())\n{\nvar recordSet = (from r in entity.SomeTable\norderby r.SomeID\nselect r);\nrecordSet = recordSet.Skip((pageNumber - 1) * pageSize).Take(pageSize);\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode\u003Ereturn recordSet;\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cp\u003E}\u003C\u002Fpre\u003E\u003C\u002Fp\u003E\n\u003Cp\u003EWhat’s nice about the following code is that since LINQ is lazy loading, the SQL built doesn’t actually execute until we need it too.&#160; The days of returning full datasets are done (yes, we’re still doing that on some projects).&#160; \u003C\u002Fp\u003E\n\u003Cp\u003EI went the next step to see if I could build an extension method of my own that did all of the above for me automatically.&#160; Here was the result I came up with:\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003Epublic static class ExtensionMethods\n{\n\tpublic static IQueryable\u003Ct\u003E Paginate\u003Ct\u003E(this IQueryable\u003Ct\u003E content, int pageNumber, int pageSize)\n        {\n            return content.Skip((pageNumber - 1)*pageSize).Take(pageSize);\n        }\n}\u003C\u002Fpre\u003E\n\u003Cp\u003EThis extension method takes the query returned from LINQ (an IQueryable), and applies the additional constraints to it.&#160; Here is the first example using my new extension method:\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003Eint pageNumber = 1;\nint pageSize = 20;\n\nusing (var entity = new Entities())\n{\n\tvar recordSet = (from r in entity.SomeTable\n\t\t\torderby r.SomeID\n\t\t\tselect r);\n\trecordSet = recordSet.Paginate(pageNumber, pageSize);\n\n\treturn recordSet;\n}\u003C\u002Fpre\u003E\n\u003Cp\u003E&#160;\u003C\u002Fp\u003E\n\u003Cp\u003ETa da!&#160; Hopefully that makes sense.&#160; I’m open to other suggestions and comments.&#160; I’m learning that if I take about my thought processes on certain problems, that I receive a ton of great feedback from those who listen.\u003C\u002Fp\u003E\n"}},"context":{}};(function(){var s;(s=document.currentScript||document.scripts[document.scripts.length-1]).parentNode.removeChild(s);}());</script><script src="/assets/js/app.a597a7b1.js" defer></script><script src="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html data-html-server-rendered="true" lang="en" data-vue-tag="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D%7D">
+  <head>
+    <title>Using Unity for Dependency Injection with SignalR by Kevin Griffin</title><meta name="gridsome:hash" content="782414107f461c86c0093807ec9a7009f522142f"><meta data-vue-tag="ssr" charset="utf-8"><meta data-vue-tag="ssr" name="generator" content="Gridsome v0.7.11"><meta data-vue-tag="ssr" data-key="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta data-vue-tag="ssr" data-key="format-detection" name="format-detection" content="telephone=no"><link data-vue-tag="ssr" rel="icon" href="data:,"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="16x16" href="/assets/static/favicon.ce0531f.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="32x32" href="/assets/static/favicon.ac8d93a.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="/assets/static/favicon.b9532cc.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="76x76" href="/assets/static/favicon.f22e9f3.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="152x152" href="/assets/static/favicon.62d22cb.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="120x120" href="/assets/static/favicon.1539b60.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="167x167" href="/assets/static/favicon.dc0cdc5.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="180x180" href="/assets/static/favicon.7b22250.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mali:700|Nunito"><link rel="preload" href="/assets/css/0.styles.dc844d61.css" as="style"><link rel="preload" href="/assets/js/app.a597a7b1.js" as="script"><link rel="preload" href="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" as="script"><link rel="prefetch" href="/assets/js/page--node-modules-gridsome-app-pages-404-vue.e4711ebb.js"><link rel="prefetch" href="/assets/js/page--src-pages-index-vue.e8d64122.js"><link rel="stylesheet" href="/assets/css/0.styles.dc844d61.css"><noscript data-vue-tag="ssr"><style>.g-image--loading{display:none;}</style></noscript>
+  </head>
+  <body >
+    <div data-server-rendered="true" id="app" class="layout"><header class="header"><a href="/" class="heading-link active"><h6 class="heading"></h6></a></header><div class="article"><h1>Using Unity for Dependency Injection with SignalR</h1><span>January 08, 2013</span><div class="content"><p>I've had bit of a day, and a large part of it was learning how to wrangle SignalR into using my dependency injection provider (in this case, being Unity).  There are a couple thoughts, that I'd like to communicate to you all in case you're looking to do the same thing.  Also, if you have suggestions on what I could do differently, I'm more than open to hearing.  This is solution that worked for me, and I'm hoping it'll work for you.</p>
+<p><strong>NOTE: This is built using SignalR v1.0-RC, which is a Prerelease NuGet package.  I'll try to update if this changes after release.</strong></p>
+<p>First, what do we want to do?</p>
+<pre lang="csharp">public class MyHub : Hub
+{
+   public MyHub(ISomeInterface interface)
+   {
+      // handle constructor injection here
+   }
+}</pre>
+<p>There's a hub, but it doesn't have a default constructor.  I'd like to be able to have SignalR automatically INJECT the constructor requirements when we load a new instance of the Hub.</p>
+<p>There are TWO things we need to do.  First, we need to build our container (with Unity) and tell SignalR to use it.</p>
+<pre lang="csharp">        public static void Initialise() // this isn't my misspelling, it's in the Unity.MVC NuGet package.
+        {
+            var container = BuildUnityContainer();
+
+            var unityDependencyResolver = new UnityDependencyResolver(container);
+
+            // used for MVC
+            DependencyResolver.SetResolver(unityDependencyResolver);
+            // used for WebAPI
+            GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+            // used for SignalR
+            GlobalHost.DependencyResolver = new SignalRUnityDependencyResolver(container);
+        }
+
+        private static IUnityContainer BuildUnityContainer()
+        {
+            var container = new UnityContainer();
+
+            // register all your dependencies here.
+            container.RegisterType&lt;ISomeInterface, SomeInterface&gt;();
+
+            return container;
+        }</pre>
+<p>Simple enough. You might want to know what SignalRUnityDependencyResolver looks like:</p>
+<pre lang="csharp">public class SignalRUnityDependencyResolver : DefaultDependencyResolver
+    {
+        private IUnityContainer _container;
+
+        public SignalRUnityDependencyResolver(IUnityContainer container)
+        {
+            _container = container;
+        }
+
+        public override object GetService(Type serviceType)
+        {
+            if (_container.IsRegistered(serviceType)) return _container.Resolve(serviceType);
+            else return base.GetService(serviceType);
+        }
+
+        public override IEnumerable&lt;object&gt; GetServices(Type serviceType)
+        {
+            if (_container.IsRegistered(serviceType)) return _container.ResolveAll(serviceType);
+            else return base.GetServices(serviceType);
+        }
+
+    }</pre>
+<p>What's going on here? We're creating a new SignalR dependency resolver, and inheriting from the default dependency resolver that SignalR uses. When SignalR goes to resolve a dependency, we're first going to ask Unity if it has an existing implementation. If it does not, we pass the request on to SignalR to get its default (if one is available).</p>
+<p>Why do we have do this? First, you can just replace the IoC container altogether, but I have had no luck registering all the various types that SignalR uses. This was by far an easier approach.</p>
+<p>You'd like to think everything will just work now, right? Wrong. The dependencies in your hub still will not injected. My understanding is that this is by design, so here's how to work with it.</p>
+<pre lang="csharp" class="crayon-selected">private static IUnityContainer BuildUnityContainer()
+        {
+            var container = new UnityContainer();
+
+            container.RegisterType&lt;ISomeInterface, SomeInterface&gt;();
+            container.RegisterType&lt;MyHub&gt;(new InjectionFactory(CreateMyHub));
+
+            return container;
+        }
+
+        private static object CreateMyHub(IUnityContainer p)
+        {
+            var myHub= new MyHub(p.Resolve&lt;ISomeInterface&gt;());
+
+            return myHub;
+        }</pre>
+<p>This should be simple to follow. I'm registering a new type: MyHub, and telling Unity how to create a new instance of it. Creating it involves resolving the interface myself, and creating the new instance. This instance gets routed through SignalR and eventually executed.</p>
+<p>I'm also a user of StructureMap and Ninject, and I need to sit down to figure out this same process with those frameworks (if I even need to).  If you already have experience with them, let me know what you did.</p>
+</div></div></div>
+    <script>window.__INITIAL_STATE__={"data":{"article":{"id":"2de519b93eefb07cdbbfa81389f9b993","title":"Using Unity for Dependency Injection with SignalR","date":"January 08, 2013","categories":["Development - ASP.NET"],"permalink":"using-unity-for-dependency-injection-with-signalr","content":"\u003Cp\u003EI've had bit of a day, and a large part of it was learning how to wrangle SignalR into using my dependency injection provider (in this case, being Unity).  There are a couple thoughts, that I'd like to communicate to you all in case you're looking to do the same thing.  Also, if you have suggestions on what I could do differently, I'm more than open to hearing.  This is solution that worked for me, and I'm hoping it'll work for you.\u003C\u002Fp\u003E\n\u003Cp\u003E\u003Cstrong\u003ENOTE: This is built using SignalR v1.0-RC, which is a Prerelease NuGet package.  I'll try to update if this changes after release.\u003C\u002Fstrong\u003E\u003C\u002Fp\u003E\n\u003Cp\u003EFirst, what do we want to do?\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003Epublic class MyHub : Hub\n{\n   public MyHub(ISomeInterface interface)\n   {\n      \u002F\u002F handle constructor injection here\n   }\n}\u003C\u002Fpre\u003E\n\u003Cp\u003EThere's a hub, but it doesn't have a default constructor.  I'd like to be able to have SignalR automatically INJECT the constructor requirements when we load a new instance of the Hub.\u003C\u002Fp\u003E\n\u003Cp\u003EThere are TWO things we need to do.  First, we need to build our container (with Unity) and tell SignalR to use it.\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003E        public static void Initialise() \u002F\u002F this isn't my misspelling, it's in the Unity.MVC NuGet package.\n        {\n            var container = BuildUnityContainer();\n\n            var unityDependencyResolver = new UnityDependencyResolver(container);\n\n            \u002F\u002F used for MVC\n            DependencyResolver.SetResolver(unityDependencyResolver);\n            \u002F\u002F used for WebAPI\n            GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);\n            \u002F\u002F used for SignalR\n            GlobalHost.DependencyResolver = new SignalRUnityDependencyResolver(container);\n        }\n\n        private static IUnityContainer BuildUnityContainer()\n        {\n            var container = new UnityContainer();\n\n            \u002F\u002F register all your dependencies here.\n            container.RegisterType&lt;ISomeInterface, SomeInterface&gt;();\n\n            return container;\n        }\u003C\u002Fpre\u003E\n\u003Cp\u003ESimple enough. You might want to know what SignalRUnityDependencyResolver looks like:\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\"\u003Epublic class SignalRUnityDependencyResolver : DefaultDependencyResolver\n    {\n        private IUnityContainer _container;\n\n        public SignalRUnityDependencyResolver(IUnityContainer container)\n        {\n            _container = container;\n        }\n\n        public override object GetService(Type serviceType)\n        {\n            if (_container.IsRegistered(serviceType)) return _container.Resolve(serviceType);\n            else return base.GetService(serviceType);\n        }\n\n        public override IEnumerable&lt;object&gt; GetServices(Type serviceType)\n        {\n            if (_container.IsRegistered(serviceType)) return _container.ResolveAll(serviceType);\n            else return base.GetServices(serviceType);\n        }\n\n    }\u003C\u002Fpre\u003E\n\u003Cp\u003EWhat's going on here? We're creating a new SignalR dependency resolver, and inheriting from the default dependency resolver that SignalR uses. When SignalR goes to resolve a dependency, we're first going to ask Unity if it has an existing implementation. If it does not, we pass the request on to SignalR to get its default (if one is available).\u003C\u002Fp\u003E\n\u003Cp\u003EWhy do we have do this? First, you can just replace the IoC container altogether, but I have had no luck registering all the various types that SignalR uses. This was by far an easier approach.\u003C\u002Fp\u003E\n\u003Cp\u003EYou'd like to think everything will just work now, right? Wrong. The dependencies in your hub still will not injected. My understanding is that this is by design, so here's how to work with it.\u003C\u002Fp\u003E\n\u003Cpre lang=\"csharp\" class=\"crayon-selected\"\u003Eprivate static IUnityContainer BuildUnityContainer()\n        {\n            var container = new UnityContainer();\n\n            container.RegisterType&lt;ISomeInterface, SomeInterface&gt;();\n            container.RegisterType&lt;MyHub&gt;(new InjectionFactory(CreateMyHub));\n\n            return container;\n        }\n\n        private static object CreateMyHub(IUnityContainer p)\n        {\n            var myHub= new MyHub(p.Resolve&lt;ISomeInterface&gt;());\n\n            return myHub;\n        }\u003C\u002Fpre\u003E\n\u003Cp\u003EThis should be simple to follow. I'm registering a new type: MyHub, and telling Unity how to create a new instance of it. Creating it involves resolving the interface myself, and creating the new instance. This instance gets routed through SignalR and eventually executed.\u003C\u002Fp\u003E\n\u003Cp\u003EI'm also a user of StructureMap and Ninject, and I need to sit down to figure out this same process with those frameworks (if I even need to).  If you already have experience with them, let me know what you did.\u003C\u002Fp\u003E\n"}},"context":{}};(function(){var s;(s=document.currentScript||document.scripts[document.scripts.length-1]).parentNode.removeChild(s);}());</script><script src="/assets/js/app.a597a7b1.js" defer></script><script src="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" defer></script>
+  </body>
+</html>

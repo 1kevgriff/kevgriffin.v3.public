@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html data-html-server-rendered="true" lang="en" data-vue-tag="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D%7D">
+  <head>
+    <title>My Defacto .gitignore file by Kevin Griffin</title><meta name="gridsome:hash" content="782414107f461c86c0093807ec9a7009f522142f"><meta data-vue-tag="ssr" charset="utf-8"><meta data-vue-tag="ssr" name="generator" content="Gridsome v0.7.11"><meta data-vue-tag="ssr" data-key="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta data-vue-tag="ssr" data-key="format-detection" name="format-detection" content="telephone=no"><link data-vue-tag="ssr" rel="icon" href="data:,"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="16x16" href="/assets/static/favicon.ce0531f.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="32x32" href="/assets/static/favicon.ac8d93a.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="icon" type="image/png" sizes="96x96" href="/assets/static/favicon.b9532cc.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="76x76" href="/assets/static/favicon.f22e9f3.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="152x152" href="/assets/static/favicon.62d22cb.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="120x120" href="/assets/static/favicon.1539b60.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="167x167" href="/assets/static/favicon.dc0cdc5.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="apple-touch-icon" type="image/png" sizes="180x180" href="/assets/static/favicon.7b22250.9bb7ffafafc09ac851d81afb65b8ef59.png"><link data-vue-tag="ssr" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mali:700|Nunito"><link rel="preload" href="/assets/css/0.styles.dc844d61.css" as="style"><link rel="preload" href="/assets/js/app.a597a7b1.js" as="script"><link rel="preload" href="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" as="script"><link rel="prefetch" href="/assets/js/page--node-modules-gridsome-app-pages-404-vue.e4711ebb.js"><link rel="prefetch" href="/assets/js/page--src-pages-index-vue.e8d64122.js"><link rel="stylesheet" href="/assets/css/0.styles.dc844d61.css"><noscript data-vue-tag="ssr"><style>.g-image--loading{display:none;}</style></noscript>
+  </head>
+  <body >
+    <div data-server-rendered="true" id="app" class="layout"><header class="header"><a href="/" class="heading-link active"><h6 class="heading"></h6></a></header><div class="article"><h1>My Defacto .gitignore file</h1><span>November 12, 2012</span><div class="content"><p>Every time I create a new Git repo, I always have to go look for a previous copy of my .gitignore file.  I thought it would be a great idea to just post it up for all to find, in case they were looking for it.  This particular file is built around Visual Studio projects.</p>
+<pre class="crayon-selected"># Ignore file for Visual Studio
+
+# use glob syntax
+syntax: glob
+
+# Ignore Config files with keys and passwords
+#ServiceConfiguration*.cscfg
+#Web*.config
+#App*.config
+
+# Ignore Visual Studio files
+*.obj
+#*.exe
+#*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vshost.*
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.scc
+*.orig
+UpgradeLog*.*
+UpgradeReport*.*
+[Bb]in
+[Dd]ebug*/
+obj/
+[Rr]elease*/
+_ReSharper*/
+[Tt]est[Rr]esult*
+[Bb]uild[Ll]og.*
+*.[Pp]ublish.xml
+glob:*.vs10x
+*.ReSharper
+[Pp]ublish
+[Rr]eleaseFiles
+[Cc]sx/
+[Bb]ackup1/
+[Pp]ackages/
+
+# Mac Files
+.DS_Store
+*.DS_Store
+._*</pre>
+</div></div></div>
+    <script>window.__INITIAL_STATE__={"data":{"article":{"id":"ddb253a45d051681c18b3ef24678dcee","title":"My Defacto .gitignore file","date":"November 12, 2012","categories":["Development"],"permalink":"base-gitignore","content":"\u003Cp\u003EEvery time I create a new Git repo, I always have to go look for a previous copy of my .gitignore file.  I thought it would be a great idea to just post it up for all to find, in case they were looking for it.  This particular file is built around Visual Studio projects.\u003C\u002Fp\u003E\n\u003Cpre class=\"crayon-selected\"\u003E# Ignore file for Visual Studio\n\n# use glob syntax\nsyntax: glob\n\n# Ignore Config files with keys and passwords\n#ServiceConfiguration*.cscfg\n#Web*.config\n#App*.config\n\n# Ignore Visual Studio files\n*.obj\n#*.exe\n#*.pdb\n*.user\n*.aps\n*.pch\n*.vspscc\n*.vshost.*\n*_i.c\n*_p.c\n*.ncb\n*.suo\n*.tlb\n*.tlh\n*.bak\n*.cache\n*.ilk\n*.log\n*.lib\n*.sbr\n*.scc\n*.orig\nUpgradeLog*.*\nUpgradeReport*.*\n[Bb]in\n[Dd]ebug*\u002F\nobj\u002F\n[Rr]elease*\u002F\n_ReSharper*\u002F\n[Tt]est[Rr]esult*\n[Bb]uild[Ll]og.*\n*.[Pp]ublish.xml\nglob:*.vs10x\n*.ReSharper\n[Pp]ublish\n[Rr]eleaseFiles\n[Cc]sx\u002F\n[Bb]ackup1\u002F\n[Pp]ackages\u002F\n\n# Mac Files\n.DS_Store\n*.DS_Store\n._*\u003C\u002Fpre\u003E\n"}},"context":{}};(function(){var s;(s=document.currentScript||document.scripts[document.scripts.length-1]).parentNode.removeChild(s);}());</script><script src="/assets/js/app.a597a7b1.js" defer></script><script src="/assets/js/page--src-templates-article-vue.fe6cfc9d.js" defer></script>
+  </body>
+</html>
